@@ -16,22 +16,22 @@ async def create_battery(battery: Battery):
 @router.get('/read', status_code=status.HTTP_200_OK)
 async def read_all_batteries():
 
-    query_user = await battery_dao.select_all_batteries()
+    query_battery = await battery_dao.select_all_batteries()
 
-    data = {'battery': query_user}
+    data = {'battery': query_battery}
     return JSONResponse(content=data)
 
 
 @router.get('/read-id', status_code=status.HTTP_302_FOUND)
 async def read_battery_by_id(id_battery: int):
 
-    query_user = await battery_dao.select_battery_by_id(id_battery)
+    query_battery = await battery_dao.select_battery_by_id(id_battery)
 
-    if not query_user:
+    if not query_battery:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f'id not found')
 
-    data = {'battery': query_user}
+    data = {'battery': query_battery}
     return JSONResponse(content=data)
 
 
