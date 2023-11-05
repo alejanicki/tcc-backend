@@ -10,7 +10,7 @@ router = APIRouter()
 # criar novo usuario
 
 
-@router.post('/create', status_code=status.HTTP_201_CREATED)
+@router.post('/create-user', status_code=status.HTTP_201_CREATED)
 async def create_user(user: User):
 
     if not user.terms_conditions:

@@ -15,6 +15,24 @@ create table `user` (
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+create table `battery` (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    type_battery varchar(4) NOT NULL,
+    PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+create table `deposit` (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    date_deposit date NOT NULL,
+    id_user BIGINT,
+    earned_credit BIGINT,
+    id_battery BIGINT,
+    number_of_batteries BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (id_user) REFERENCES `user`(id),
+    FOREIGN KEY (id_battery) REFERENCES `battery`(id)
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 create table `prizes` (
     id BIGINT NOT NULL AUTO_INCREMENT,
     name_prize varchar(255) NOT NULL,
@@ -31,22 +49,4 @@ create table `trade` (
     PRIMARY KEY (id),
     FOREIGN KEY (id_user) REFERENCES `user`(id),
     FOREIGN KEY (id_prize) REFERENCES `prizes`(id)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-create table `battery` (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    type_battery varchar(4) NOT NULL,
-    PRIMARY KEY (id)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-create table `transaction` (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    date_transaction date NOT NULL,
-    id_user BIGINT,
-    earn BIGINT,
-    id_battery BIGINT,
-    number_of_batteries BIGINT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id_user) REFERENCES `user`(id),
-    FOREIGN KEY (id_battery) REFERENCES `battery`(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
