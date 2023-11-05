@@ -1,31 +1,18 @@
 use tcc;
 
-create table `address` (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    zip_code varchar(8) NOT NULL,
-    street_name varchar(255) NOT NULL,
-    state_user varchar(2) NOT NULL,
-    city varchar(255) NOT NULL,
-    neighborhood varchar(255) NOT NULL,
-    address_number varchar(5) NOT NULL,
-    complement varchar(255),
-    PRIMARY KEY (id)
-)ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 create table `user` (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    id_address BIGINT,
+    address_user varchar(255),
     name_user varchar(255) NOT NULL,
-    last_name varchar(255) NOT NULL,
-    date_birth date NOT NULL,
-    cpf varchar(11) NOT NULL UNIQUE,
-    cellphone varchar(30) NOT NULL,
+    date_birth date,
+    cpf varchar(11) UNIQUE,
+    cellphone varchar(30),
     email varchar(30) NOT NULL UNIQUE,
     password_user varchar(255) NOT NULL,
-    Credit BIGINT,
-    terms_conditions boolean,
-    PRIMARY KEY (id),
-    FOREIGN KEY (id_address) REFERENCES `address`(id)
+    credit BIGINT,
+    terms_conditions boolean NOT NULL,
+    share_data boolean NOT NULL,
+    PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 create table `prizes` (
