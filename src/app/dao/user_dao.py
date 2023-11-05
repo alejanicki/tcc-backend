@@ -1,9 +1,35 @@
-from models.user_models import UserUpdate
+from models.user_models import User, UserUpdate
 from dao.dao import connect_database
 from parameters import HOST, PORT, USER, PASSWORD, DATABASE
 
+# Adiciona uma nova linha a tabela user
 
-def select_all_user():
+
+async def create_new_user(user: User):
+    connection, cursor = connect_database(
+        host=HOST,
+        port=int(PORT),
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    create_user = "INSERT INTO user SET" + \
+        ", ".join(f" {field} = '{1 if value is True else 0 if value is False else f'{
+                  value}'}'" for field, value in user)
+
+    cursor.execute(create_user)
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return {'message': 'User created successfully'}
+
+
+# Seleciona todos os usuarios
+
+
+async def select_all_user():
     connection, cursor = connect_database(
         host=HOST,
         port=int(PORT),
@@ -22,8 +48,10 @@ def select_all_user():
     return user_list
 
 
-# Adiciona uma nova linha a tabela user
-async def create_new_user(first_name: str, last_name: str, email: str, password_user: str, terms_conds: bool, share_data: bool):
+# Seleciona usuario pelo id
+
+
+async def select_user_by_id(user_id: int):
     connection, cursor = connect_database(
         host=HOST,
         port=int(PORT),
@@ -32,21 +60,20 @@ async def create_new_user(first_name: str, last_name: str, email: str, password_
         database=DATABASE
     )
 
-    name = f'{first_name}" "{last_name}'
+    query = f'SELECT * FROM user WHERE id = {user_id}'
 
-    create_user = f'INSERT INTO user (name_user, email, password_user, terms_conditions, share_data) VALUES ("{
-        name}", "{email}", "{password_user}", {terms_conds}, {share_data})'
-
-    cursor.execute(create_user)
-
-    connection.commit()
+    cursor.execute(query)
+    query_result = cursor.fetchall()
     cursor.close()
     connection.close()
 
-    return {'message': 'User created successfully'}
+    return query_result
 
 
-def update_user(id_user: int, user: UserUpdate):
+# Atualiza o usuario referenciado
+
+
+async def update_user(id_user: int, user: UserUpdate):
     connection, cursor = connect_database(
         host=HOST,
         port=PORT,
@@ -63,17 +90,35 @@ def update_user(id_user: int, user: UserUpdate):
         cursor.execute(update_user)
         connection.commit()
 
-    query = f"SELECT id_address FROM user WHERE id = {id_user}"
-
-    cursor.execute(query)
-    result = cursor.fetchone()
+    cursor.close()
     connection.close()
 
-    return result
+    return {'message': 'User uptaded successfully'}
 
+
+# deletando usuario pelo id
+async def delete_user_by_id(user_id: int):
+    connection, cursor = connect_database(
+        host=HOST,
+        port=PORT,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f'DELETE FROM user WHERE id={user_id}'
+
+    cursor.execute(query)
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return {'message': 'User deleted successfully'}
 
 # Verifica cpf
-async def verify_data_overwrite(cpf: str, email: str):
+
+
+async def verify_data_cpf(cpf: str):
     connection, cursor = connect_database(
         host=HOST,
         port=int(PORT),
@@ -82,21 +127,19 @@ async def verify_data_overwrite(cpf: str, email: str):
         database=DATABASE
     )
 
-    query_cpf = f"SELECT cpf FROM user WHERE cpf = '{cpf}';"
+    query_cpf = f"SELECT cpf FROM user WHERE cpf = '{cpf}'"
 
     cursor.execute(query_cpf)
-    result_cpf = cursor.fetchone()
-
-    query_email = f"SELECT email FROM user WHERE email= '{email}'"
-
-    cursor.execute(query_email)
-    result_email = cursor.fetchone()
+    result = cursor.fetchone()
+    cursor.close()
     connection.close()
 
-    return bool(result_cpf), bool(result_email)
+    return result is not None
 
 
 # Verifica email
+
+
 async def verify_email(email: str):
     connection, cursor = connect_database(
         host=HOST,
@@ -106,10 +149,37 @@ async def verify_email(email: str):
         database=DATABASE
     )
 
-    query = f"SELECT email FROM user WHERE email = '{email}';"
+    query = f"SELECT email FROM user WHERE email = '{email}'"
 
     cursor.execute(query)
     result = cursor.fetchone()
     connection.close()
 
     return result is not None
+
+
+# Verifica cpf execeto do usuário que terá o update
+
+
+async def verify_data_users(id_user: int, cpf: str, email: str):
+    connection, cursor = connect_database(
+        host=HOST,
+        port=int(PORT),
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query_cpf = f"SELECT cpf FROM user WHERE cpf = '{cpf}' AND id <> {id_user}"
+
+    cursor.execute(query_cpf)
+    result_cpf = cursor.fetchone()
+
+    query_email = f"SELECT email FROM user WHERE email = '{
+        email}' AND id <> {id_user}"
+
+    cursor.execute(query_email)
+    result_email = cursor.fetchone()
+    connection.close()
+
+    return bool(result_cpf), bool(result_email)
