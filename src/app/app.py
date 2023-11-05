@@ -2,7 +2,7 @@ from fastapi import FastAPI, status, status
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import user_routes
+from routes import user_routes, battery_routes
 
 app = FastAPI()
 
@@ -27,5 +27,6 @@ app.add_middleware(
 )
 
 app.include_router(user_routes.router, prefix="/user", tags=['Usuários'])
+app.include_router(battery_routes.router, prefix="/battery", tags=['Baterias'])
 
 # python -m uvicorn app:app --reload

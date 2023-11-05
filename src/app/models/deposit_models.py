@@ -1,10 +1,10 @@
 from pydantic import BaseModel
 from datetime import date
 
-class Transaction(BaseModel):
+class Deposit(BaseModel):
     id: int
-    date_transaction: date
+    date_deposit: date
     id_user: int
-    earn: int
+    earned_credit: float
     id_battery: int
     number_of_batteries: int
