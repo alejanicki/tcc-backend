@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from datetime import date
 
 class Deposit(BaseModel):
-    id: int
     date_deposit: date
     id_user: int
     earned_credit: float
