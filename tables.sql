@@ -33,7 +33,7 @@ create table `deposit` (
     FOREIGN KEY (id_battery) REFERENCES `battery`(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table `prizes` (
+create table `prize` (
     id BIGINT NOT NULL AUTO_INCREMENT,
     name_prize varchar(255) NOT NULL,
     cost BIGINT NOT NULL,
@@ -48,5 +48,5 @@ create table `trade` (
     id_prize BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (id_user) REFERENCES `user`(id),
-    FOREIGN KEY (id_prize) REFERENCES `prizes`(id)
+    FOREIGN KEY (id_prize) REFERENCES `prize`(id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;

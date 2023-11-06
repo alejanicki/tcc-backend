@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Prizes(BaseModel):
-    prize_name: str
+class Prize(BaseModel):
+    name_prize: str
     cost: float
-    description: str
+    description_prize: str
