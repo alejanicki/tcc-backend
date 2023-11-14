@@ -1,3 +1,4 @@
+from typing import Optional, Dict
 from models.user_models import User, UserUpdate
 from dao.dao import connect_database
 from parameters import HOST, PORT, USER, PASSWORD, DATABASE
@@ -181,3 +182,21 @@ async def verify_data_users(id_user: int, cpf: str, email: str):
     connection.close()
 
     return bool(result_cpf), bool(result_email)
+
+
+def verify_user_exists(email: str):
+    connection, cursor = connect_database(
+        host=HOST,
+        port=int(PORT),
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"SELECT id AS id_user, password_user FROM user WHERE email = '{email}'"
+
+    cursor.execute(query)
+    result = cursor.fetchone()
+    connection.close()
+    
+    return result
