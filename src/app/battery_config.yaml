@@ -1,0 +1,6 @@
+path: C:/repos/TCC/tcc-backend/src/app/data
+train: C:/repos/TCC/tcc-backend/src/app/data/train
+val: C:/repos/TCC/tcc-backend/src/app/data/train
+
+nc: 1
+names: ["battery"]

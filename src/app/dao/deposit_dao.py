@@ -13,8 +13,7 @@ async def create_new_deposit(deposit: Deposit):
     )
 
     create_user = "INSERT INTO deposit SET" + \
-        ", ".join(f" {field} = '{1 if value is True else 0 if value is False else f'{
-                  value}'}'" for field, value in deposit)
+        ", ".join(f" {field} = '{1 if value is True else 0 if value is False else f'{value}'}'" for field, value in deposit)
 
     cursor.execute(create_user)
     connection.commit()
