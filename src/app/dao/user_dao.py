@@ -15,8 +15,7 @@ async def create_new_user(user: User):
     )
 
     create_user = "INSERT INTO user SET" + \
-        ", ".join(f" {field} = '{1 if value is True else 0 if value is False else f'{
-                  value}'}'" for field, value in user)
+        ", ".join(f" {field} = '{1 if value is True else 0 if value is False else f'{value}'}'" for field, value in user)
 
     cursor.execute(create_user)
     connection.commit()
@@ -175,8 +174,7 @@ async def verify_data_users(id_user: int, cpf: str, email: str):
     cursor.execute(query_cpf)
     result_cpf = cursor.fetchone()
 
-    query_email = f"SELECT email FROM user WHERE email = '{
-        email}' AND id <> {id_user}"
+    query_email = f"SELECT email FROM user WHERE email = '{email}' AND id <> {id_user}"
 
     cursor.execute(query_email)
     result_email = cursor.fetchone()
