@@ -17,7 +17,7 @@ create table `user` (
 
 create table `battery` (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    type_battery varchar(4) NOT NULL,
+    type_battery varchar(8) NOT NULL,
     PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

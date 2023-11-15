@@ -94,6 +94,24 @@ async def update_user(id_user: int, user: UserUpdate):
 
     return {'message': 'User uptaded successfully'}
 
+async def update_user_credits(id_user: int, credit: float):
+    connection, cursor = connect_database(
+        host=HOST,
+        port=PORT,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f'UPDATE user SET credit = "{credit}" WHERE id = {id_user}'
+
+    cursor.execute(query)
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return {'message': 'Credits added successfully'}
+
 
 # deletando usuario pelo id
 async def delete_user_by_id(user_id: int):
