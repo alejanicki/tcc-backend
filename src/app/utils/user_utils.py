@@ -23,6 +23,8 @@ async def user_data_processing(cpf: str, cellphone: str, email: str):
 
 
 def format_date(date):
+    if date is None:
+        return "0000-00-00"
     return f"{date.year}-{date.month}-{date.day}"
 
 

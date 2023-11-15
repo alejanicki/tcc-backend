@@ -62,7 +62,7 @@ async def select_user_by_id(user_id: int):
     query = f'SELECT * FROM user WHERE id = {user_id}'
 
     cursor.execute(query)
-    query_result = cursor.fetchall()
+    query_result = cursor.fetchone()
     cursor.close()
     connection.close()
 
@@ -93,6 +93,24 @@ async def update_user(id_user: int, user: UserUpdate):
     connection.close()
 
     return {'message': 'User uptaded successfully'}
+
+async def update_user_credits(id_user: int, credit: float):
+    connection, cursor = connect_database(
+        host=HOST,
+        port=PORT,
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f'UPDATE user SET credit = "{credit}" WHERE id = {id_user}'
+
+    cursor.execute(query)
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return {'message': 'Credits added successfully'}
 
 
 # deletando usuario pelo id
@@ -181,3 +199,21 @@ async def verify_data_users(id_user: int, cpf: str, email: str):
     connection.close()
 
     return bool(result_cpf), bool(result_email)
+
+
+def verify_user_exists(email: str):
+    connection, cursor = connect_database(
+        host=HOST,
+        port=int(PORT),
+        user=USER,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    query = f"SELECT id AS id_user, password_user FROM user WHERE email = '{email}'"
+
+    cursor.execute(query)
+    result = cursor.fetchone()
+    connection.close()
+    
+    return result
