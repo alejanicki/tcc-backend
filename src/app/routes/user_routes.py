@@ -1,8 +1,9 @@
+from typing import Any, Optional
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from models.user_models import User, UserUpdate
 from dao import user_dao
-from utils import user_utils
+from utils import user_utils, jwt_utils
 
 
 router = APIRouter()
@@ -35,31 +36,38 @@ async def create_user(user: User):
 @router.get('/read', status_code=status.HTTP_200_OK)
 async def read_all_user():
 
-    query_user = await user_dao.select_all_user()
+    query_user: Optional[Any] = await user_dao.select_all_user()
 
-    data = {'user': query_user}
-    return JSONResponse(content=data)
+    if query_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f'An error has occurred. We apologize for any inconvenience and are actively working to resolve the issue.')
+
+    for user in query_user:
+        user['date_birth'] = user_utils.format_date(user['date_birth'])
+
+    return JSONResponse(content=query_user)
 
 # ler usuario pelo id
 
 
 @router.get('/read-id', status_code=status.HTTP_302_FOUND)
-async def read_user_by_id(user_id: int):
+async def read_user_by_id(token: dict = Depends(jwt_utils.verify_token)):
 
-    query_user = await user_dao.select_user_by_id(user_id)
+    query_user: Optional[Any] = await user_dao.select_user_by_id(token['sub'])
 
-    if not query_user:
+    if query_user is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail=f'id not found')
+            status_code=status.HTTP_404_NOT_FOUND, detail=f'user not found')
 
-    data = {'user': query_user}
-    return JSONResponse(content=data)
+    query_user['date_birth'] = user_utils.format_date(query_user['date_birth'])
+
+    return JSONResponse(content=query_user)
 
 # Atualizar usuario
 
 
 @router.post('/update', status_code=status.HTTP_200_OK)
-async def update_user(user_id: int, user: UserUpdate):
+async def update_user(user: UserUpdate, token: dict = Depends(jwt_utils.verify_token)):
 
     # Processando dados
     if user.cpf and user.cellphone and user.email is not None:
@@ -67,7 +75,7 @@ async def update_user(user_id: int, user: UserUpdate):
 
     # atualizando usuário
     result = await user_dao.update_user(
-        id_user=user_id,
+        id_user=token['sub'],
         user=user
     )
 
@@ -80,12 +88,12 @@ async def update_user(user_id: int, user: UserUpdate):
 
 # Deletando usuario
 @router.post('/delete-id', status_code=status.HTTP_200_OK)
-async def delete_user_by_id(user_id: int):
+async def delete_user_by_id(token: dict = Depends(jwt_utils.verify_token)):
 
-    check_user_exists = await user_dao.select_user_by_id(user_id)
+    check_user_exists = await user_dao.select_user_by_id(token['sub'])
 
     if check_user_exists:
-        await user_dao.delete_user_by_id(user_id)
+        await user_dao.delete_user_by_id(token['sub'])
         return JSONResponse(content={'message': 'User deleted successfully'})
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

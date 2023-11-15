@@ -1,4 +1,3 @@
-from typing import Optional, Dict
 from models.user_models import User, UserUpdate
 from dao.dao import connect_database
 from parameters import HOST, PORT, USER, PASSWORD, DATABASE
@@ -63,7 +62,7 @@ async def select_user_by_id(user_id: int):
     query = f'SELECT * FROM user WHERE id = {user_id}'
 
     cursor.execute(query)
-    query_result = cursor.fetchall()
+    query_result = cursor.fetchone()
     cursor.close()
     connection.close()
 
