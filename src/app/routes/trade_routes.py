@@ -1,13 +1,15 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
 from dao import trade_dao
+from utils import jwt_utils
 
 from models.trade_models import Trade
 
 router = APIRouter()
 
 @router.post('/create', status_code=status.HTTP_201_CREATED)
-async def create_trade(trade: Trade):
+async def create_trade(trade: Trade, token: dict = Depends(jwt_utils.verify_token)):
+    trade.id_user = token['sub']
     await trade_dao.create_new_trade(trade)
     return JSONResponse(content={'message': f'Trade created successfully'})
 
