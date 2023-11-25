@@ -75,9 +75,9 @@ async def delete_deposit_by_id(id_deposit: int):
                         detail=f'Cannot found battery')
 
 @router.get('/battery-count', status_code=status.HTTP_200_OK)
-async def count_battery():
+async def count_battery(battery_quantity: int):
     
-    batteries_count = battery_predict.count_batteries()
+    batteries_count = battery_predict.count_batteries(battery_quantity)
     
     return JSONResponse(content=batteries_count)
     

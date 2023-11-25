@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field, EmailStr
 REGEX_CPF = r'^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\.?\-?[0-9]{2}$'
 REGEX_BDATE = r'^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$'
 REGEX_CELLPHONE = r'^\+?[0-9]{2}\s?\(?[0-9]{2}\)?\s?9[0-9]{4}\-?[0-9]{4}$'
+REGEX_CEP=r'^[0-9]{5}\-?[0-9]{3}$'
 
 # Modelo de criação para usuários
 
@@ -29,3 +30,5 @@ class UserUpdate(BaseModel):
     cellphone: Optional[str] = Field(None, pattern=REGEX_CELLPHONE)
     email: Optional[EmailStr] = None
     password_user: Optional[str] = Field(None)
+    cep: str = Field(pattern=REGEX_CEP)
+
