@@ -1,3 +1,4 @@
+import string
 from typing import Any, Optional
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse
@@ -10,14 +11,8 @@ import battery_predict
 router = APIRouter()
 
 @router.post('/create', status_code=status.HTTP_201_CREATED)
-async def create_deposit(deposit: Deposit, count_battery: int, token: dict = Depends(jwt_utils.verify_token)):
-    deposit.id_user = token['sub']
-    deposit.number_of_batteries = count_battery
-    deposit.id_battery = 3
-    deposit.earned_credit = count_battery
-
+async def create_deposit(deposit: Deposit):
     await deposit_dao.create_new_deposit(deposit)
-    await user_dao.update_user_credits(token['sub'], deposit.earned_credit)
     return JSONResponse(content={'message': f'Deposit created successfully'})
 
 
@@ -75,9 +70,9 @@ async def delete_deposit_by_id(id_deposit: int):
                         detail=f'Cannot found battery')
 
 @router.get('/battery-count', status_code=status.HTTP_200_OK)
-async def count_battery(battery_quantity: int):
+async def count_battery(battery_quantity):
     
-    batteries_count = battery_predict.count_batteries(battery_quantity)
+    batteries_count = battery_predict.count_batteries(int(battery_quantity))
     
-    return JSONResponse(content=batteries_count)
-    
+    return JSONResponse(content={'count': batteries_count})
+      

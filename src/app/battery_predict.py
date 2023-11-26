@@ -1,3 +1,4 @@
+import string
 import cv2
 from sympy import true
 from ultralytics import YOLO
@@ -41,6 +42,7 @@ def count_batteries(battery_quantity: int):
         thickness=4, text_thickness=4, text_scale=2)
 
     no_detection_time = 0 
+    
 
     while line_counter.in_count < battery_quantity:
         ret, frame = cap.read()
