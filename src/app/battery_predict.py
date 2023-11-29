@@ -7,6 +7,7 @@ import supervision as sv
 from supervision.geometry.core import Point
 from supervision.detection import line_counter
 import numpy as np
+import arduino
 
 LINE_START = Point(500, 0)
 LINE_END = Point(500, 720)
@@ -18,7 +19,6 @@ def parse_arguments() -> argparse.Namespace:
                         default=[1280, 720], nargs=2, type=int)
     args = parser.parse_args()
     return args
-
 
 
 def count_batteries(battery_quantity: int):
@@ -41,8 +41,7 @@ def count_batteries(battery_quantity: int):
     line_annotator = sv.LineZoneAnnotator(
         thickness=4, text_thickness=4, text_scale=2)
 
-    no_detection_time = 0 
-    
+    no_detection_time = 0
 
     while line_counter.in_count < battery_quantity:
         ret, frame = cap.read()
@@ -63,9 +62,14 @@ def count_batteries(battery_quantity: int):
         else:
             no_detection_time = 0
 
-        if no_detection_time >= 10:
+        if no_detection_time >= 5:
             print("No batteries detected for 10 seconds. Exiting...")
             break
+
+        if (detections):
+            arduino.controlar_motor('direita')
+        else:
+            arduino.controlar_motor('esquerda')
 
     cap.release()
     cv2.destroyAllWindows()
