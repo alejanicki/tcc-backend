@@ -24,9 +24,9 @@ create table `battery` (
 create table `deposit` (
     id BIGINT NOT NULL AUTO_INCREMENT,
     date_deposit date NOT NULL,
-    id_user BIGINT,
+    id_user BIGINT NOT NULL,
     earned_credit BIGINT,
-    id_battery BIGINT,
+    id_battery BIGINT NOT NULL,
     number_of_batteries BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (id_user) REFERENCES `user`(id),
@@ -44,8 +44,9 @@ create table `prize` (
 create table `trade` (
     id BIGINT NOT NULL AUTO_INCREMENT,
     date_trade date NOT NULL,
-    id_user BIGINT,
-    id_prize BIGINT,
+    id_user BIGINT NOT NULL,
+    id_prize BIGINT NOT NULL,
+    cost_trade BIGINT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (id_user) REFERENCES `user`(id),
     FOREIGN KEY (id_prize) REFERENCES `prize`(id)
